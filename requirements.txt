@@ -1,0 +1,11 @@
+flask
+gunicorn
+python-dotenv
+youtube-transcript-api>=1.0.0
+yt-dlp
+langchain
+langchain-community
+langchain-openai
+langchain-core
+faiss-cpu
+tiktoken
