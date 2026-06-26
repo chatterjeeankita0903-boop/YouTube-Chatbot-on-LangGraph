@@ -2,7 +2,7 @@ flask
 gunicorn
 python-dotenv
 youtube-transcript-api>=1.0.0
-yt-dlp
+yt-dlp>=2024.08.06
 langchain
 langchain-community
 langchain-openai

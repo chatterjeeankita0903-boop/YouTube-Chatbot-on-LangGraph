@@ -91,11 +91,19 @@ def _fetch_via_ytdlp(video_id: str) -> tuple[str, int]:
             "--write-subs", "--write-auto-subs",
             "--sub-lang", "en",
             "--sub-format", "json3",
+            "--extractor-args", "youtube:player_client=default,-tv,web_safari,web_embedded,-android_sdkless",
             "--output", out_template,
-            url,
         ]
+        
+        # Pass cookies to yt-dlp if available
+        cookies_path = os.path.join(os.path.dirname(__file__), "cookies.txt")
+        if os.path.exists(cookies_path):
+            cmd.extend(["--cookies", cookies_path])
+            
+        cmd.append(url)
+        
         result = subprocess.run(
-            cmd, capture_output=True, text=True, timeout=60
+            cmd, capture_output=True, text=True, timeout=90
         )
         if result.returncode != 0:
             raise Exception(
