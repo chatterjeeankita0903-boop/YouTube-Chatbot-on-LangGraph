@@ -103,7 +103,11 @@ def api_build():
         traceback.print_exc()
         msg = str(e)
         msg_lower = msg.lower()
-        if "ipblocked" in msg_lower or "requestblocked" in msg_lower or "blocking requests from your ip" in msg_lower:
+        if "fallback (yt-dlp):" in msg_lower:
+            # If yt-dlp failed, extract its specific error to show to the user
+            fallback_err = msg.split("Fallback (yt-dlp):")[1].strip()
+            msg = f"Railway IP is blocked, and the yt-dlp fallback also failed: {fallback_err}"
+        elif "ipblocked" in msg_lower or "requestblocked" in msg_lower or "blocking requests from your ip" in msg_lower:
             msg = "YouTube is blocking requests from this server (IP Blocked). You may need to configure a proxy or try a different network."
         elif "videounavailable" in msg_lower or "video is unavailable" in msg_lower:
             msg = "This YouTube video is unavailable or private. Please check the video URL."

@@ -92,6 +92,7 @@ def _fetch_via_ytdlp(video_id: str) -> tuple[str, int]:
             "--sub-lang", "en",
             "--sub-format", "json3",
             "--extractor-args", "youtube:player_client=default,-tv,web_safari,web_embedded,-android_sdkless",
+            "--force-ipv4",
             "--output", out_template,
         ]
         
