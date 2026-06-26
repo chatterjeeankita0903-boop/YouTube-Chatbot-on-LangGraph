@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TranscriptBooth — grounded YouTube Q&amp;A</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <span class="onair" id="onair"><span class="dot"></span>off air</span>
+      <span class="brand">Transcript<span>Booth</span></span>
+      <span class="video-state" id="videoState"></span>
+    </header>
+
+    <div class="main">
+      <!-- setup rail: drives the backend + visualizes the pipeline -->
+      <aside class="rail">
+        <div>
+          <h2>On the record</h2>
+          <div class="field">
+            <label for="videoInput">YouTube link or video id</label>
+            <input id="videoInput" type="text" placeholder="https://youtu.be/ockrdZal5fA" />
+          </div>
+          <button class="btn" id="buildBtn">Build knowledge base</button>
+          <button class="newvid" id="newvidBtn">↻ Load a different video</button>
+        </div>
+
+        <div class="pipeline" id="pipeline">
+          <h2>Pipeline</h2>
+          <div class="step" data-step="fetch"><span class="tick">▸</span><span>Fetch transcript</span></div>
+          <div class="step" data-step="chunk"><span class="tick">▸</span><span>Chunk <b id="chunkN">—</b> passages</span></div>
+          <div class="step" data-step="embed"><span class="tick">▸</span><span>Embed (text-embedding-3-small)</span></div>
+          <div class="step" data-step="index"><span class="tick">▸</span><span>Index in FAISS</span></div>
+        </div>
+
+        <a class="thumb" id="thumb" target="_blank" rel="noopener"><img id="thumbImg" alt="Video thumbnail" /></a>
+
+        <div class="config">
+          <div><b>model</b> &nbsp;gpt-4o-mini · temp 0.2</div>
+          <div><b>retriever</b> &nbsp;similarity · k=5</div>
+          <div><b>chunks</b> &nbsp;1000 / 200 overlap</div>
+        </div>
+      </aside>
+
+      <!-- chat -->
+      <section class="chat">
+        <div class="thread" id="thread">
+          <div class="empty" id="empty">
+            <div class="eyebrow">Grounded · No hallucinations</div>
+            <h1>Put a video on the record.</h1>
+            <p>Paste a YouTube link and I'll answer only from what's actually said in it — with the source passages to prove it.</p>
+          </div>
+        </div>
+
+        <div class="composer">
+          <textarea id="input" rows="1" placeholder="Build a knowledge base first…" disabled></textarea>
+          <button class="send" id="send" disabled aria-label="Send">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
